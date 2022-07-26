@@ -1,0 +1,67 @@
+const prompt = require('prompt-sync')();
+
+const wallDimensions = [];
+const windowDimensions = [];
+let moreWalls = 'Y';
+
+do{
+    h = prompt('Please enter wall height. ');
+    wallDimensions.push(parseInt(h));
+    w = prompt('Please enter wall width. ');
+    wallDimensions.push(parseInt(w));
+    moreWalls = prompt('Would you like to input more wall dimensions? Y/N: ').toUpperCase();
+    if(moreWalls != 'Y' && moreWalls != 'N'){
+        moreWalls = prompt('Answer not valid, Would you like to input more wall dimensions? Y/N: ').toUpperCase();
+    }
+} while(moreWalls == 'Y');
+
+if(wallDimensions.length%2 != 0){
+    console.log('Oops, something went wrong. Please start again.');
+}
+
+let moreWindows = 'Y';
+do{
+    h = prompt('Please enter window/door height. ');
+    windowDimensions.push(parseInt(h));
+    w = prompt('Please enter window/door width. ');
+    windowDimensions.push(parseInt(w));
+    moreWindows = prompt('Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+    if(moreWindows != 'Y' && moreWalls != 'N'){
+        moreWindows = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+    }
+} while(moreWindows == 'Y');
+if(windowDimensions.length%2 != 0){
+    console.log('Oops, something went wrong. Please start again.');
+}
+/*
+console.log(wallDimensions);
+console.log(windowDimensions);
+*/
+const wallAreas = [];
+const windowAreas = [];
+for(i=0; i<wallDimensions.length-1; i+=2){
+    wallArea = wallDimensions[i]*wallDimensions[i+1];
+    wallAreas.push(wallArea);
+}
+
+for(i=0; i<windowDimensions.length-1; i+=2){
+    windowAreas.push(windowDimensions[i]*windowDimensions[i+1]);
+}
+
+console.log(wallAreas);
+console.log(windowAreas);
+
+
+let totalWallArea = 0;
+for(i=0; i<wallAreas.length; i++){
+    totalWallArea += wallAreas[i];
+}
+
+let totalWindowArea = 0;
+for(i=0; i<windowAreas.length; i++){
+    totalWindowArea += windowAreas[i];
+}
+
+const area = totalWallArea - totalWindowArea;
+const vol = area*0.1;
+console.log(`You will need approximatley ${vol}L of paint per coat. ` );
