@@ -1,0 +1,48 @@
+const prompt = require('prompt-sync')();
+
+function getHeight(){
+    const h = prompt("Please input height. ");
+    return height = parseInt(h);
+}
+
+function getWidth(){
+    const w = prompt("Please input width. ");
+    return width = parseInt(w);
+}
+
+function calcArea(height, width){
+    return area = height*width;
+}
+
+
+/*Take wall and window measurements, calculate wall area.*/
+let wallArea = 0;
+let wall = 'Y';
+do{
+    height = getHeight();
+    width = getWidth();
+    wallArea += calcArea(height, width);
+    let window = prompt("Would you like to input window/door measurements? Y/N: ").toUpperCase();
+    if(window != 'Y' && window != 'N'){
+        window = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+    }
+    while(window == 'Y'){
+        height = getHeight();
+        width = getWidth();
+        winArea = calcArea(height, width);
+        wallArea -= winArea;
+        window = prompt("Would you like to input window/door measurements? Y/N: ").toUpperCase();
+        if(window != 'Y' && window != 'N'){
+            window = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+        }
+    }
+    wall = prompt('Would you like to input dimensions for another wall? Y/N: ').toUpperCase();
+    if(wall != 'Y' && wall != 'N'){
+        wall = prompt('Answer not valid, Would you like to input more wall dimensions? Y/N: ').toUpperCase();
+    }
+} while (wall == 'Y')
+
+const vol = wallArea*0.1;
+
+console.log(`You will need approximatley ${vol}L of paint per coat. ` );
+
