@@ -1,48 +1,302 @@
 const prompt = require('prompt-sync')();
+/*
+let wall = 'Y';
+const finishArr = ['gloss', 'matt', 'satin', 'silk', 'smooth'];
+const canSizeArr = [];
+const canNumberArr = [];
+*/
+const wallArea = getWallArea();
+/*
+const windowArea = getWindowArea();
 
+const areaToPaint = calcPaintArea(wallArea, windowArea);
+
+const vol = areaToPaint*0.1;
+console.log('----');
+console.log(`You will need approximately ${vol}L of paint per coat. ` );
+
+const totalVol = calcTotalVol();
+console.log('----');
+console.log(`You will need ${totalVol}L of paint. ` );
+console.log('----');
+
+howManyCans(totalVol);
+console.log('----');
+
+const totalPrice = calcPrice();
+console.log('----');
+console.log(`Your total cost is ${totalPrice}.`)
+*/
+
+/*=====
+GETTERS
+=====*/
+
+//getHeight takes the height of a wall/door/window from user input and store it as a number.
 function getHeight(){
-    const h = prompt("Please input height. ");
-    return height = parseInt(h);
+        let h = prompt("Please input height. ");
+        if(isNaN(h) || h <= 0){
+            throw new Error();
+        }
+        let height = parseInt(h);
+        return height;
 }
 
+//getWidth takes the width of a wall/door/window from user input and store it as a number.
 function getWidth(){
-    const w = prompt("Please input width. ");
+    let w = 0;
+    try{
+        const w = prompt("Please input width. ");
+        if(isNaN(w) || w<=0){
+            throw new Error;
+        }
+    }
+    catch(exception_let){
+        console.log('Enter a number above zero.');
+        getWidth();
+    }
     return width = parseInt(w);
 }
 
+/*=================
+CALCULATE WALL AREA
+=================*/
+
+//Calculates area, used when determining area of walls and windows etc.
 function calcArea(height, width){
     return area = height*width;
 }
 
-
-/*Take wall and window measurements, calculate wall area.*/
-let wallArea = 0;
-let wall = 'Y';
-do{
-    height = getHeight();
-    width = getWidth();
-    wallArea += calcArea(height, width);
-    let window = prompt("Would you like to input window/door measurements? Y/N: ").toUpperCase();
-    if(window != 'Y' && window != 'N'){
-        window = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+//Asks the user if they have more wall dimensions to input, used in the getWallArea() loop.
+function askWall(){
+    let wall = prompt('Would you like to input dimensions for another wall? Y/N: ').toUpperCase();
+    while(wall != 'Y' && wall != 'N'){
+        wall = prompt('Answer not valid, Would you like to input more wall dimensions? Y/N: ').toUpperCase();
     }
+    return wall;
+}
+
+//Asks the user if they have more window/door dimensions to input, used in the getWindowArea() loop.
+function askWindow(){
+    let window = prompt("Would you like to input window/door measurements? Y/N: ").toUpperCase();
+        while(window != 'Y' && window != 'N'){
+            window = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+        }
+        return window;
+    }
+
+//Calculates the area requiring paint.
+function calcPaintArea(wallArea, windowArea){
+    try{
+        if(wallArea <= windowArea){
+            throw new Error();
+        }
+    }
+    catch(exception_let){
+        console.log('Oops! Something went wrong, your window area is greater than your wall area. \nPlease check your measurements and re-enter them.\n');
+        getWallArea();
+    }
+    return wallArea -= windowArea;
+}
+
+//Take wall measurements.
+//Ask about windows and doors for wall
+//Repeat until all walls covered.
+
+function getWallArea(){
+    let wallArea = 0;
+    do{
+        let height = getHeight();
+        let width = getWidth();
+        wallArea += calcArea(height, width);
+        wall = askWall();
+    } while (wall == 'Y')
+    return wallArea;
+}
+
+function getWindowArea(){
+    let window = askWindow();
+    let winArea = 0;
     while(window == 'Y'){
         height = getHeight();
         width = getWidth();
-        winArea = calcArea(height, width);
-        wallArea -= winArea;
-        window = prompt("Would you like to input window/door measurements? Y/N: ").toUpperCase();
-        if(window != 'Y' && window != 'N'){
-            window = prompt('Answer not valid, Would you like to input more window/door dimensions? Y/N: ').toUpperCase();
+        winArea += calcArea(height, width);
+        window = askWindow();
+    }
+    return winArea;
+}
+
+function calcTotalVol(){
+    let totalVol = vol*howManyCoats();
+    return totalVol;
+}
+
+/*============
+HOW MANY COATS
+============*/
+
+function howManyCoats(){
+    let coats = prompt(console.log('How many coats will you need? '));
+    try{
+        if(isNaN(coats)){
+            throw new Error;
         }
     }
-    wall = prompt('Would you like to input dimensions for another wall? Y/N: ').toUpperCase();
-    if(wall != 'Y' && wall != 'N'){
-        wall = prompt('Answer not valid, Would you like to input more wall dimensions? Y/N: ').toUpperCase();
+    catch(exception_let){
+        console.log('Invalid input. Input whole number.');
+        howManyCoats();
     }
-} while (wall == 'Y')
+    return coats = parseInt(coats);
+}
 
-const vol = wallArea*0.1;
+/*============
+CHOOSE FINISH
+============*/
 
-console.log(`You will need approximatley ${vol}L of paint per coat. ` );
+function getFinish(){
+    const finish  = prompt(console.log('What finish would you like, please choose: \nGloss\nMatt\nSatin\nSilk\nSmooth\n')).toLowerCase();
+    try{
+        if(!finishArr.includes(finish)){
+            throw new Error;
+        }
+    } catch(exception_let){
+        console.log("I'm sorry, please choose from the list.")
+        getFinish();
+        }
+        return finish;
+    }
 
+/*============
+HOW MANY CANS?
+============*/
+
+function wholeCans(volumeOfPaint, volumeOfCan){
+    let remainder = volumeOfPaint%volumeOfCan;
+    let cans = (volumeOfPaint - remainder)/volumeOfCan;
+    return cans
+}
+
+function howManyCans(volume){
+    let size = 0;
+    let numberOfCans = 0;
+    while(volume >= 1){
+        if(volume >= 5){
+            size = 5;
+        } else if(volume >= 2.5){
+            size = 2.5;
+        } else if(volume >= 1.25){
+            size = 1.25;
+        } else if(volume >= 1){
+            size = 1;
+        }
+        numberOfCans = wholeCans(volume, size);
+        canNumberArr.push(numberOfCans);
+        canSizeArr.push(size);
+        console.log(`You will need ${numberOfCans} can(s) of ${size} litre paint`);
+        volume = volume%size;
+    }
+    if(volume < 1 && volume > 0.75){
+        size = 0.75;
+        numberOfCans = 2;
+        canNumberArr.push(numberOfCans);
+        canSizeArr.push(size);
+        console.log(`You will need ${numberOfCans} can(s) of ${size} litre paint`);
+    } else if(volume <= 0.75 && volume > 0){
+        size = 0.75;
+        numberOfCans = 1;
+        canNumberArr.push(numberOfCans);
+        canSizeArr.push(size);
+        console.log(`You will need ${numberOfCans} can(s) of ${size} litre paint`);
+    }
+}
+
+/*==============
+CALCULATING PRICE
+===============*/
+
+function getPrice(finish, size){
+    let price = 0;
+    switch(finish){
+        case 'gloss':
+            if(size == 0.75){
+                price = 17;
+            }
+            if(size == 1){
+                price = 20;
+            }
+            if(size == 1.25){
+                price = 22;
+            }
+            if(size == 2.5){
+                price = 30;
+            }
+            if(size == 5){
+                price = 45;
+            }
+            break;
+        case 'matt':
+            if(size == 0.75){
+                price = 8;
+            }
+            if(size == 1){
+                price = 12;
+            }
+            if(size == 1.25){
+                price = 15;
+            }
+            if(size == 2.5){
+                price = 24;
+            }
+            if(size == 5){
+                price = 30;
+            }
+            break;
+        case 'satin':
+            if(size == 0.75){
+                price = 19;
+            }
+            if(size == 1){
+                price = 24;
+            }
+            if(size == 1.25){
+                price = 26;
+            }
+            if(size == 2.5){
+                price = 35;
+            }
+            if(size == 5){
+                price = 50;
+            }
+            break;
+        case 'silk':
+            if(size == 0.75){
+                price = 7;
+            }
+            if(size == 1){
+                price = 10;
+            }
+            if(size == 1.25){
+                price = 12;
+            }
+            if(size == 2.5){
+                price = 19;
+            }
+            if(size == 5){
+                price = 28;
+            }
+            break
+    }
+    return price;
+}
+
+function calcPrice(){
+    let totalPrice = 0;
+    let finish = getFinish();
+    for(i = 0; i<canSizeArr.length; i++){
+        numberOfCans = canNumberArr[i];
+        size = canSizeArr[i];
+        price = getPrice(finish, size);
+        totalPrice += price*numberOfCans;
+    }
+    return totalPrice;
+}
